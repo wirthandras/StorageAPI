@@ -19,9 +19,9 @@ namespace StorageAPI.Controllers
         }
 
         [HttpPost(Name = "Car")]
-        public IActionResult PostNewCarData(StorageRequest request)
+        public async Task<IActionResult> PostNewCarData(StorageRequest request)
         {
-            _carService.Save(request);
+            await _carService.Save(request);
             _logger.LogInformation($"Name: {request?.Name}");
             _logger.LogInformation($"Price: {request?.Price}");
             _logger.LogInformation($"ImageUrl: {request?.ImageUrl}");
