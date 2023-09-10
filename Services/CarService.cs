@@ -58,6 +58,7 @@ namespace StorageAPI.Services
             }
             else 
             {
+                existingCar.CarBaseUrl = request.CarBaseUrl;
                 if (request.Price.HasValue)
                 {
                     if (existingCar.Prices.Count > 0)
