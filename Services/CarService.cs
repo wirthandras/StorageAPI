@@ -52,6 +52,7 @@ namespace StorageAPI.Services
                 {
                     ImageUrl = request.ImageUrl,
                     Name = request.Name,
+                    CarBaseUrl = request.CarBaseUrl
                 });
 
                 appDBContext.SaveChangesAsync();
