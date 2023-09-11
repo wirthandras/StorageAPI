@@ -30,7 +30,8 @@ namespace StorageAPI.Services
                     Name = c?.Car?.Name,
                     LastPrice = c?.Price,
                     LastPriceAt = c?.CreatedAt,
-                    ImageUrl = c?.Car?.ImageUrl
+                    CarBaseUrl = c?.Car?.CarBaseUrl,
+                    ImageUrl = c?.Car?.ImageUrl,
                 });
             });
 
