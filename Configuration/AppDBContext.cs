@@ -9,6 +9,8 @@ namespace StorageAPI.Configuration
 
         public DbSet<CarPrice> Price { get; set; }
 
+        public DbSet<Image> Image { get; set; }
+
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options) 
         {
         }
@@ -21,8 +23,11 @@ namespace StorageAPI.Configuration
                 .HasForeignKey(e => e.CarId)
                 .IsRequired();
 
-
-
+            modelBuilder.Entity<Image>()
+                .HasOne(e => e.Car)
+                .WithMany(e => e.Images)
+                .HasForeignKey(e => e.CarId)
+                .IsRequired();
         }
     }
 }

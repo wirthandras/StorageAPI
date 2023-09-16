@@ -16,6 +16,7 @@ builder.Services.AddDbContext<AppDBContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddTransient<ICarService, CarService>();
+builder.Services.AddTransient<IImageService, ImageService>();
 
 var app = builder.Build();
 
