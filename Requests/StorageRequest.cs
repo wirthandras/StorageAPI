@@ -9,5 +9,6 @@
         public string? ImageUrl { get; set;}
 
         public decimal? Price { get; set; }
+        public decimal? DiscountedPrice { get; set; }
     }
 }

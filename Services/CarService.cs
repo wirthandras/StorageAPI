@@ -67,12 +67,16 @@ namespace StorageAPI.Services
                     {
                         var previousPrice = existingCar.Prices.OrderByDescending(o => o.CreatedAt).FirstOrDefault();
 
-                        if (!previousPrice?.Price.Equals(request.Price) ?? false) 
+                        bool hasNewPrice = !previousPrice?.Price.Equals(request.Price) ?? false;
+                        bool hasNewDiscountedPrice = !previousPrice?.DiscountedPrice.Equals(request.DiscountedPrice) ?? false;
+
+                        if (hasNewPrice || hasNewDiscountedPrice) 
                         {
                             existingCar.Prices.Add(new CarPrice
                             {
                                 CreatedAt = DateTime.UtcNow,
                                 Price = request.Price ?? 0,
+                                DiscountedPrice = request.DiscountedPrice,
                             });
                             appDBContext.SaveChangesAsync();
                         }
@@ -83,6 +87,7 @@ namespace StorageAPI.Services
                         {
                             CreatedAt = DateTime.UtcNow,
                             Price = request.Price ?? 0,
+                            DiscountedPrice = request.DiscountedPrice ?? 0,
                         });
                         appDBContext.SaveChangesAsync();
                     }

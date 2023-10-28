@@ -7,5 +7,6 @@
         public virtual Car? Car { get; set; }
         public DateTime CreatedAt { get; set; }
         public decimal Price { get; set; }
+        public decimal? DiscountedPrice { get; set; }
     }
 }
