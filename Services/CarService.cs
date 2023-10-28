@@ -25,10 +25,20 @@ namespace StorageAPI.Services
 
             lastestChanges.ForEach(c =>
             {
+                List<decimal?> minList = new();
+                if (c is not null) 
+                {
+                    minList.Add(c.Price);
+                    if (c.DiscountedPrice.HasValue) 
+                    {
+                        minList.Add(c.DiscountedPrice.Value);
+                    }                     
+                }                
+                
                 latestItems.Add(new LatestItem
                 {
                     Name = c?.Car?.Name,
-                    LastPrice = c?.Price,
+                    LastPrice = minList.Min(),
                     LastPriceAt = c?.CreatedAt,
                     CarBaseUrl = c?.Car?.CarBaseUrl,
                     ImageUrl = c?.Car?.ImageUrl,
