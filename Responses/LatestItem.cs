@@ -7,5 +7,7 @@
         public string? ImageUrl { get; set; }
         public DateTime? LastPriceAt { get; set; }
         public decimal? LastPrice { get; set; }
+
+        public IEnumerable<DatePrice> Prices { get; set; } = Enumerable.Empty<DatePrice>();
     }
 }

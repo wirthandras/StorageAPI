@@ -8,7 +8,7 @@ namespace StorageAPI.Services
     public class CarService : ICarService
     {
         private readonly AppDBContext appDBContext;
-        public CarService(AppDBContext dbContect) 
+        public CarService(AppDBContext dbContect)
         {
             appDBContext = dbContect;
         }
@@ -21,20 +21,27 @@ namespace StorageAPI.Services
                 .Take(limit)
                 .ToListAsync();
 
+
+            var priceChanges = await appDBContext.Price
+                .Include(p => p.Car)
+                .OrderByDescending(p => p.CreatedAt)
+                .Where(x => lastestChanges.Select(s => s.CarId).Contains(x.CarId))
+                .ToListAsync();
+
             List<LatestItem> latestItems = new();
 
             lastestChanges.ForEach(c =>
             {
                 List<decimal?> minList = new();
-                if (c is not null) 
+                if (c is not null)
                 {
                     minList.Add(c.Price);
-                    if (c.DiscountedPrice.HasValue) 
+                    if (c.DiscountedPrice.HasValue)
                     {
                         minList.Add(c.DiscountedPrice.Value);
-                    }                     
-                }                
-                
+                    }
+                }
+
                 latestItems.Add(new LatestItem
                 {
                     Name = c?.Car?.Name,
@@ -42,6 +49,14 @@ namespace StorageAPI.Services
                     LastPriceAt = c?.CreatedAt,
                     CarBaseUrl = c?.Car?.CarBaseUrl,
                     ImageUrl = c?.Car?.ImageUrl,
+                    Prices = priceChanges
+                                .Where(p => p.CarId == c?.CarId)
+                                .Select(s => new DatePrice
+                                {
+                                    PriceAt = s.CreatedAt,
+                                    Price = s.Price,
+                                    DiscountedPrice = s.DiscountedPrice
+                                })
                 });
             });
 
@@ -68,7 +83,7 @@ namespace StorageAPI.Services
 
                 appDBContext.SaveChangesAsync();
             }
-            else 
+            else
             {
                 existingCar.CarBaseUrl = request.CarBaseUrl;
                 if (request.Price.HasValue)
@@ -80,7 +95,7 @@ namespace StorageAPI.Services
                         bool hasNewPrice = !previousPrice?.Price.Equals(request.Price) ?? false;
                         bool hasNewDiscountedPrice = !previousPrice?.DiscountedPrice.Equals(request.DiscountedPrice) ?? false;
 
-                        if (hasNewPrice || hasNewDiscountedPrice) 
+                        if (hasNewPrice || hasNewDiscountedPrice)
                         {
                             existingCar.Prices.Add(new CarPrice
                             {
@@ -91,7 +106,7 @@ namespace StorageAPI.Services
                             appDBContext.SaveChangesAsync();
                         }
                     }
-                    else 
+                    else
                     {
                         existingCar.Prices.Add(new CarPrice
                         {
