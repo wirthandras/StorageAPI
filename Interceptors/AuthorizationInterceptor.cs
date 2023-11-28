@@ -4,9 +4,9 @@ using StorageAPI.Controllers;
 
 public class AuthorizationInterceptor : IAsyncActionFilter
 {
-    private readonly ILogger<StorageController> _logger;
+    private readonly ILogger<AuthorizationInterceptor> _logger;
 
-    public AuthorizationInterceptor(ILogger<StorageController> logger)
+    public AuthorizationInterceptor(ILogger<AuthorizationInterceptor> logger)
     {
         _logger = logger;
     }
