@@ -30,9 +30,9 @@ namespace StorageAPI.Controllers
         }
 
         [HttpGet(Name = "LatestChanges")]
-        public async Task<LatestChangesResponse> GetLatestChanges(int limit = 10)
+        public async Task<LatestChangesResponse> GetLatestChanges(int limit = 10, string? search = "")
         {
-            var latestChanges = await _carService.LatestChanges(limit);
+            var latestChanges = await _carService.LatestChanges(limit, search);
 
             return latestChanges;
         }

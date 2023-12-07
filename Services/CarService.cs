@@ -13,18 +13,24 @@ namespace StorageAPI.Services
             appDBContext = dbContect;
         }
 
-        public async Task<LatestChangesResponse> LatestChanges(int limit = 10)
+        public async Task<LatestChangesResponse> LatestChanges(int limit = 10, string? search = "")
         {
-            var lastestChanges = await appDBContext.Price
-                .Include(p => p.Car)
-                .OrderByDescending(p => p.CreatedAt)
-                .Take(limit)
-                .ToListAsync();
+            IQueryable<CarPrice> query = appDBContext.Price
+                .Include(p => p.Car);
 
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(c => c.Car != null && c.Car.Name != null && c.Car.Name.Contains(search));
+            }
+
+            query = query.OrderByDescending(p => p.CreatedAt)
+                .Take(limit);
+
+            var lastestChanges = await query.ToListAsync();
 
             var priceChanges = await appDBContext.Price
                 .Include(p => p.Car)
-                .OrderByDescending(p => p.CreatedAt)
+                .OrderBy(p => p.CreatedAt)
                 .Where(x => lastestChanges.Select(s => s.CarId).Contains(x.CarId))
                 .ToListAsync();
 

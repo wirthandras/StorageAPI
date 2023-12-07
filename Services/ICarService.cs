@@ -7,6 +7,6 @@ namespace StorageAPI.Services
     {
         public Task Save(StorageRequest request);
 
-        public Task<LatestChangesResponse> LatestChanges(int limit = 10);
+        public Task<LatestChangesResponse> LatestChanges(int limit = 10, string search = "");
     }
 }
