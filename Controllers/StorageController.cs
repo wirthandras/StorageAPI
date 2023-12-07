@@ -29,6 +29,14 @@ namespace StorageAPI.Controllers
             return Ok();
         }
 
+        [HttpGet("KeyWords")]
+        public async Task<KeyWordResponse> GetKeyWords()
+        {
+            var keyWords = await _carService.GetKeyWords();
+
+            return keyWords;
+        }
+
         [HttpGet(Name = "LatestChanges")]
         public async Task<LatestChangesResponse> GetLatestChanges(int limit = 10, string? search = "")
         {

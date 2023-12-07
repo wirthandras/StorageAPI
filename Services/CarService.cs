@@ -13,6 +13,20 @@ namespace StorageAPI.Services
             appDBContext = dbContect;
         }
 
+        public async Task<KeyWordResponse> GetKeyWords()
+        {
+            var carNames = await appDBContext.Car
+                .Select(x => x.Name)
+                .ToListAsync();
+
+            var keyWords = carNames.Select(name => name?.Split(' ').FirstOrDefault()).Distinct().ToList();
+
+            return new KeyWordResponse
+            {
+                KeyWords = keyWords.AsEnumerable()
+            };
+        }
+
         public async Task<LatestChangesResponse> LatestChanges(int limit = 10, string? search = "")
         {
             IQueryable<CarPrice> query = appDBContext.Price
