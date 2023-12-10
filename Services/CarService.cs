@@ -38,6 +38,7 @@ namespace StorageAPI.Services
             }
 
             query = query.OrderByDescending(p => p.CreatedAt)
+                .DistinctBy(x => x.CarId)
                 .Take(limit);
 
             var lastestChanges = await query.ToListAsync();
