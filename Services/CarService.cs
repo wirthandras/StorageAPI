@@ -98,7 +98,10 @@ namespace StorageAPI.Services
                 {
                     ImageUrl = request.ImageUrl,
                     Name = request.Name,
-                    CarBaseUrl = request.CarBaseUrl
+                    CarBaseUrl = request.CarBaseUrl,
+                    Year = request.Year,
+                    CubicCapacity = request.CubicCapacity,
+                    Mileage = request.Mileage
                 });
 
                 appDBContext.SaveChangesAsync();
@@ -106,6 +109,18 @@ namespace StorageAPI.Services
             else
             {
                 existingCar.CarBaseUrl = request.CarBaseUrl;
+                if (request.Year.HasValue && request.Year > 1990) 
+                {
+                    existingCar.Year = request.Year;
+                }
+                if (request.CubicCapacity.HasValue && request.CubicCapacity > 0)
+                {
+                    existingCar.CubicCapacity = request.CubicCapacity;
+                }
+                if (request.Mileage.HasValue && request.Mileage > 0)
+                {
+                    existingCar.Mileage = request.Mileage;
+                }
                 if (request.Price.HasValue)
                 {
                     if (existingCar.Prices.Count > 0)
