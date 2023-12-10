@@ -38,7 +38,6 @@ namespace StorageAPI.Services
             }
 
             query = query.OrderByDescending(p => p.CreatedAt)
-                .DistinctBy(x => x.CarId)
                 .Take(limit);
 
             var lastestChanges = await query.ToListAsync();
@@ -51,7 +50,7 @@ namespace StorageAPI.Services
 
             List<LatestItem> latestItems = new();
 
-            lastestChanges.ForEach(c =>
+            lastestChanges.DistinctBy(d => d.CarId).ToList().ForEach(c =>
             {
                 List<decimal?> minList = new();
                 if (c is not null)
