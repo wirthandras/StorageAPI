@@ -75,7 +75,7 @@ namespace StorageAPI.Services
                                 {
                                     PriceAt = s.CreatedAt,
                                     Price = s.Price,
-                                    DiscountedPrice = s.DiscountedPrice
+                                    DiscountedPrice = s.DiscountedPrice.HasValue && s.DiscountedPrice.Value > decimal.Zero ? s.DiscountedPrice : s.Price
                                 })
                 });
             });
