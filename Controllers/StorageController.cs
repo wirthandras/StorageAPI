@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using StorageAPI.Model;
 using StorageAPI.Responses;
@@ -11,16 +12,25 @@ namespace StorageAPI.Controllers
     {
         private readonly ILogger<StorageController> _logger;
         private readonly ICarService _carService;
+        private IValidator<StorageRequest> _storageRequestValidator;
 
-        public StorageController(ILogger<StorageController> logger, ICarService carService)
+        public StorageController(ILogger<StorageController> logger, ICarService carService, IValidator<StorageRequest> storageRequestValidator)
         {
             _logger = logger;
             _carService = carService;
+            _storageRequestValidator = storageRequestValidator;
         }
 
         [HttpPost(Name = "Car")]
         public async Task<IActionResult> PostNewCarData(StorageRequest request)
         {
+            var validationResult = await _storageRequestValidator.ValidateAsync(request);
+
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
             await _carService.Save(request);
             _logger.LogInformation($"Name: {request?.Name}");
             _logger.LogInformation($"Price: {request?.Price}");

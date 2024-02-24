@@ -88,20 +88,33 @@ namespace StorageAPI.Services
 
         public Task Save(StorageRequest request)
         {
+            var existingBrand = appDBContext.Brand
+                .FirstOrDefault(b => b.Name == request.Brand);
+
             var existingCar = appDBContext.Car
                 .Include(c => c.Prices)
                 .FirstOrDefault(f => f.ImageUrl == request.ImageUrl);
 
             if (existingCar is null)
             {
-                appDBContext.Car.Add(new Car
+                var newCar = new Car
                 {
+                    Brand = existingBrand,
                     ImageUrl = request.ImageUrl,
                     Name = request.Name,
                     CarBaseUrl = request.CarBaseUrl,
                     Year = request.Year,
                     CubicCapacity = request.CubicCapacity,
                     Mileage = request.Mileage
+                };
+
+                appDBContext.Car.Add(newCar);
+
+                newCar.Prices.Add(new CarPrice
+                {
+                    CreatedAt = DateTime.UtcNow,
+                    Price = request.Price ?? 0,
+                    DiscountedPrice = request.DiscountedPrice,
                 });
 
                 appDBContext.SaveChangesAsync();

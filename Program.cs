@@ -1,7 +1,10 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using StorageAPI.Configuration;
 using StorageAPI.Controllers;
+using StorageAPI.Model;
+using StorageAPI.Requests.Validators;
 using StorageAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +53,8 @@ builder.Services.AddScoped<AuthorizationInterceptor>();
 builder.Services.AddTransient<ICarService, CarService>();
 builder.Services.AddTransient<IImageService, ImageService>();
 builder.Services.AddTransient<ITokenValidator, GoogleTokenValidator>();
+
+builder.Services.AddScoped<IValidator<StorageRequest>, StorageRequestValidator>();
 
 var app = builder.Build();
 
