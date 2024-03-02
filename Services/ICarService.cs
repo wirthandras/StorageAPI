@@ -10,5 +10,7 @@ namespace StorageAPI.Services
 
         public Task<KeyWordResponse> GetKeyWords();
         public Task<LatestChangesResponse> LatestChanges(int limit = 10, string search = "");
+
+        public Task ReCheckCars();
     }
 }

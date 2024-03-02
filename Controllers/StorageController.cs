@@ -47,12 +47,20 @@ namespace StorageAPI.Controllers
             return keyWords;
         }
 
-        [HttpGet(Name = "LatestChanges")]
+        [HttpGet("LatestChanges")]
         public async Task<LatestChangesResponse> GetLatestChanges(int limit = 10, string? search = "")
         {
-            var latestChanges = await _carService.LatestChanges(limit, search);
+            var latestChanges = await _carService.LatestChanges(limit, search ?? "");
 
             return latestChanges;
+        }
+
+        [HttpGet("RecheckCars")]
+        public async Task<IActionResult> PostRecheckCars()
+        {
+            await _carService.ReCheckCars();
+
+            return Ok();
         }
     }
 }

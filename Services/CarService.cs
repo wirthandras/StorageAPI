@@ -30,7 +30,8 @@ namespace StorageAPI.Services
         public async Task<LatestChangesResponse> LatestChanges(int limit = 10, string? search = "")
         {
             IQueryable<CarPrice> query = appDBContext.Price
-                .Include(p => p.Car);
+                .Include(p => p.Car)
+                .Where(p => p.Car != null && p.Car.EndOfSale == null);
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -86,6 +87,26 @@ namespace StorageAPI.Services
             };
         }
 
+        public async Task ReCheckCars()
+        {
+            var cars = appDBContext.Car.Where(p => p.EndOfSale == null);
+
+            using (var httpClient = new HttpClient())
+            {
+                foreach (var car in cars)
+                {
+                    if (car.CarBaseUrl is not null)
+                    {
+                        var response = await httpClient.GetAsync(car.CarBaseUrl);
+                        if (!response.IsSuccessStatusCode)
+                            car.EndOfSale = DateTime.UtcNow;
+                    }
+                }
+            }
+            await appDBContext.SaveChangesAsync();
+            return;
+        }
+
         public Task Save(StorageRequest request)
         {
             var existingBrand = appDBContext.Brand
@@ -122,6 +143,7 @@ namespace StorageAPI.Services
             else
             {
                 existingCar.CarBaseUrl = request.CarBaseUrl;
+                existingCar.EndOfSale = null;
                 if (request.Year.HasValue && request.Year > 1990) 
                 {
                     existingCar.Year = request.Year;

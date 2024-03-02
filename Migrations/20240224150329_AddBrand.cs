@@ -16,7 +16,7 @@ namespace StorageAPI.Migrations
                 name: "BrandId",
                 table: "Car",
                 type: "int",
-                nullable: false,
+                nullable: true,
                 defaultValue: 0);
 
             migrationBuilder.CreateTable(
